@@ -8,24 +8,25 @@ import CompleteIcon from '../../assets/img/icons/TickSquare.png'
 import HomeIcon from '../../assets/img/icons/Home.png'
 import { Image } from 'react-native';
 import { addSpaceBetweenCaps } from '../../utils/helpers';
+import { COMPLETED_TASK_SCREEN, HOME_SCREEN, MY_PROFILE_SCREEN } from '../../constants/routes';
 export default function HomeTabs() {
     const Tab = createBottomTabNavigator();
     const routes = [
       {
         id: 2,
-        name: 'Home',
+        name: HOME_SCREEN,
         component: Home,
         icons: HomeIcon
       },
       {
         id: 1,
-        name: 'CompletedTask',
+        name: COMPLETED_TASK_SCREEN,
         component: CompletedTask,
         icons: CompleteIcon
       },
       {
         id: 3,
-        name: 'My Profile',
+        name: MY_PROFILE_SCREEN,
         component: Profile,
         icons: ProfileIcon
       }

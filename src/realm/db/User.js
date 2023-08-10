@@ -1,8 +1,9 @@
 import Realm from "realm";
+import { PREFERENCES, USER } from "../../constants/schema";
 
 export class Preferences extends Realm.Object {
     static schema = {
-        name: 'Preferences',
+        name: PREFERENCES,
         properties: {
             dark_mode: 'bool',
             font_scale: 'string',
@@ -12,7 +13,7 @@ export class Preferences extends Realm.Object {
 }
 export class User extends Realm.Object {
     static schema = {
-        name: 'User',
+        name: USER,
         properties: {
             _uuid: 'string',
             password: 'string',

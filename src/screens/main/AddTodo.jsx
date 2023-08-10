@@ -8,6 +8,7 @@ import { getDateToString } from '../../utils/helpers'
 import Container from '../../components/layout/Container'
 import InputField from '../../components/shared/InputField'
 import Btn from '../../components/shared/Btn'
+import useSetRealm from '../../hooks/useSetRealm'
 
 export default function AddTodo() {
     const { useRealm,useQuery } = TodoRealmContext;
@@ -19,6 +20,7 @@ export default function AddTodo() {
     const todo = useQuery('Todo').filter((item) => item.owner_id === uuid)
     const realm = useRealm();
     const navigation = useNavigation();
+    const { setData } = useSetRealm(TodoRealmContext,'Todo')
 
     const resetInputState = () => { //Resets the state
         setDesc('');
@@ -27,17 +29,15 @@ export default function AddTodo() {
 
     const handleAdd = () => {
         // Adds new date in the Todo db and resets the states
-        realm.write(() => {
-            realm.create('Todo' , {
-                _id: nanoid(),
-                title: title,
-                desc: desc,
-                isCompleted: false,
-                dateCreated: getDateToString(), 
-                dateCompleted: getDateToString(),
-                owner_id: uuid
-            })
-        })
+        setData({ 
+            _id: nanoid(),
+            title: title,
+            desc: desc,
+            isCompleted: false,
+            dateCreated: getDateToString(), 
+            dateCompleted: getDateToString(),
+            owner_id: uuid
+        });
         resetInputState();
         navigation.navigate('Home');
     }
@@ -66,7 +66,7 @@ export default function AddTodo() {
             }
         }
     }
-    
+
     useEffect(() => {
         handleDisable();
         handleInputs();

@@ -10,6 +10,7 @@ import InputField from '../../components/shared/InputField'
 import Container from '../../components/layout/Container'
 import Btn from '../../components/shared/Btn'
 import AuthLink from '../../components/shared/AuthLink'
+import { SIGN_IN_SCREEN, SIGN_UP_SCREEN } from '../../constants/routes'
 
 export default function Register() {
   const { useRealm, useQuery } = TodoRealmContext;
@@ -107,8 +108,8 @@ export default function Register() {
       />
       <AuthLink 
         label='Already have an account?' 
-        linkText='Sign In'
-        link='LogIn'
+        linkText= { SIGN_IN_SCREEN }
+        link={ SIGN_UP_SCREEN }
       />
     </Container>
   )

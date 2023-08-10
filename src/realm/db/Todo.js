@@ -1,7 +1,8 @@
 import Realm from "realm"
+import { COMPLETED, TODO } from "../../constants/schema"
 export class Todo extends Realm.Object{
     static schema = {
-        name: 'Todo',
+        name: TODO,
         properties: {
             _id: 'string',
             title: 'string',
@@ -19,7 +20,7 @@ export class Todo extends Realm.Object{
 
 export class Completed extends Realm.Object {
     static schema = {
-        name: 'Completed',
+        name: COMPLETED,
         properties: {
             _id: 'string',
             title: 'string',

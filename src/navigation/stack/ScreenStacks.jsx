@@ -11,42 +11,38 @@ import Personal from '../../screens/profile/Personal';
 import HomeTabs from '../tabs/HomeTabs';
 import { useNavigation } from '@react-navigation/native';
 import { options } from 'yargs';
+import { ABOUT_SCREEN, ADD_TODO_SCREEN, EDIT_TODO_SCREEN, PERSONAL_INFO_SCREEN, SETTING_SCREEN, TABS_SCREEN, VIEW_TODO_SCREEN } from '../../constants/routes';
 
 export default function ScreenStacks() {
     const navigation = useNavigation();
     const Stack = createStackNavigator();
         const route = [
             {
-                name: 'AddTodo',
+                name: ADD_TODO_SCREEN,
                 component: AddTodo,
             },
             {
-                name: 'EditTodo',
+                name: EDIT_TODO_SCREEN,
                 component: EditTodo
             },
             {
-                name: 'ViewTodo',
+                name: VIEW_TODO_SCREEN,
                 component: ViewTodo
             },
             {
-                name: 'About',
+                name: ABOUT_SCREEN,
                 component:About
             },
             {
-                name: 'Personal Info',
+                name: PERSONAL_INFO_SCREEN,
                 component: Personal
             },
             {
-                name: 'Setting',
+                name: SETTING_SCREEN,
                 component: Preferences
             },
             {
-                name: 'Add Todo',
-                component: AddTodo,
-                showHeader: true
-            },
-            {
-                name: 'Tabs',
+                name: TABS_SCREEN,
                 component: HomeTabs,
                 options: {
                     headerShown: false
@@ -56,8 +52,8 @@ export default function ScreenStacks() {
         ]
     return (
         <Stack.Navigator
-            initialRouteName='Tabs'
-            screenOptions={{
+            initialRouteName = { TABS_SCREEN }
+            screenOptions = {{
                 headerTitleAlign: 'center',
                 headerShown: true,
             }}
@@ -68,12 +64,6 @@ export default function ScreenStacks() {
                         name={item.name} 
                         component={item.component} 
                         key={item.name + index}
-                        // options={{
-                        //     title: item.name.replace(/([A-Z])/g, ' $1').trim(),
-                        //     tabBarStyle: {
-                        //         display: 'none'
-                        //     }
-                        // }}
                         options={item.options}
                     />
                 ))

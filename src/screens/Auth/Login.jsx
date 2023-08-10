@@ -7,6 +7,7 @@ import { User } from '../../realm/db/User'
 import InputField from '../../components/shared/InputField'
 import Btn from '../../components/shared/Btn'
 import AuthLink from '../../components/shared/AuthLink'
+import { SIGN_UP_SCREEN } from '../../constants/routes'
 
 export default function Login() {
   const { useQuery } = TodoRealmContext;
@@ -72,8 +73,8 @@ export default function Login() {
       />
       <AuthLink
         label={`Don't have an account yet?`}
-        linkText='Sign Up'
-        link='Register'
+        linkText={ SIGN_UP_SCREEN }
+        link={SIGN_UP_SCREEN}
       />
     </View>
   )

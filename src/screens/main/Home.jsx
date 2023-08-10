@@ -12,12 +12,16 @@ import Close from '../../assets/img/icons/form/CloseSquare.png'
 import Btn from '../../components/shared/Btn'
 import Container from '../../components/layout/Container'
 import More from '../../assets/img/icons/form/MoreCircle.png'
+import { ADD_TODO_SCREEN } from '../../constants/routes'
+import useSetRealm from '../../hooks/useSetRealm'
+import { COMPLETED, TODO } from '../../constants/schema'
 
 export default function Home() {
   const navigation = useNavigation();
   const {uuid} = useSelector(state => state.AuthReducerSlice)
-  const { useRealm, useObject } = TodoRealmContext;
+  const { useRealm, useObject,useQuery } = TodoRealmContext;
   const realm = useRealm();
+  const test= useQuery(TODO).filter((item) => item.owner_id === uuid)
   const [todoItems,setTodoItems] = useState([]);
   const activeUser = useObject(User,uuid)
   const { width } = useWindowDimensions();
@@ -25,15 +29,26 @@ export default function Home() {
   const [activeItemState,setActiveItemState] = useState({});
   const dispatch = useDispatch();
   const theme = useColorScheme();
+  const { setData } = useSetRealm(TodoRealmContext,COMPLETED)
   
   // A way to get data from realm without using useQuery hook
-  // Gets the data from the realm db
-  realm.addListener('change',() => setTodoItems(realm.objects('Todo').filter((val) => val.owner_id === uuid)))
+  // Gets the data from the realm db if something changes
   useEffect(() => {
+    realm.addListener('change',() => { //Use to get refetch data due to changes
+      setTodoItems(
+        realm.objects(TODO)
+        .filter((val) => val.owner_id === uuid)
+      )
+    })
+    setTodoItems(test || []);
+    
+    return () => {
+      realm.removeListener();
+      setTodoItems([])
+    }
+  }, [])
 
-    setTodoItems(setTodoItems(realm.objects('Todo').filter((val) => val.owner_id === uuid)) || []);
-  }, [navigation])
-
+  console.log(test,'todoItems')
   useEffect(() => {
     // Updates the user data in the store
     dispatch(setAuth({
@@ -45,7 +60,7 @@ export default function Home() {
   },[activeUser])
 
   const handleAddTask = () => {
-    navigation.navigate('AddTodo')
+    navigation.navigate(ADD_TODO_SCREEN)
 }
 
 const resetState = () => {
@@ -54,7 +69,7 @@ const resetState = () => {
 }
 
 const handleClickMore = (item) => {
-  //Toggles the options dropdown
+  //Toggles the options dropdown and sets the item that was selected
   dispatch(setActiveStoreItem(item));
   setIsHowMore(true);
   setActiveItemState(item);
@@ -80,18 +95,16 @@ const handleUpdate = () => {
 
 const handleComplete = () => {
   // Removes the item from the Todo schema and pushes it to the Completed schema and resets state
-  realm.write(() => {
-    realm.create('Completed', {
-      _id: activeItemState._id,
-      title: activeItemState.title,
-      desc: activeItemState.desc,
-      isCompleted: true,
-      dateCreated: activeItemState.dateCreated,
-      dateCompleted: getDateToString(),
-      owner_id: uuid
-    });
-    realm.delete(activeItemState);
-  });
+  setData( {
+    _id: activeItemState._id,
+    title: activeItemState.title,
+    desc: activeItemState.desc,
+    isCompleted: true,
+    dateCreated: activeItemState.dateCreated,
+    dateCompleted: getDateToString(),
+    owner_id: uuid
+  })
+  realm.delete(activeItemState);
   resetState();
 }
 
