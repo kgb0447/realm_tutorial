@@ -3,8 +3,8 @@ import { StyleSheet, useWindowDimensions, Alert } from 'react-native'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import { nanoid } from '@reduxjs/toolkit'
 import { useNavigation } from '@react-navigation/native'
-import { Todo } from '../../realm/db/Todo'
 import { useSelector } from 'react-redux'
+import { getDateToString } from '../../utils/helpers'
 import Container from '../../components/layout/Container'
 import InputField from '../../components/shared/InputField'
 import Btn from '../../components/shared/Btn'
@@ -16,36 +16,36 @@ export default function AddTodo() {
     const [title,setTitle] = useState('')
     const [desc,setDesc] = useState('');
     const [isDisabled,setIsDisabled] = useState(true)
-    const todo = useQuery(Todo)
+    const todo = useQuery('Todo').filter((item) => item.owner_id === uuid)
     const realm = useRealm();
-    const date = Date.now();
     const navigation = useNavigation();
 
-    const resetInputState = () => {
+    const resetInputState = () => { //Resets the state
         setDesc('');
         setTitle('');
     }
 
     const handleAdd = () => {
+        // Adds new date in the Todo db and resets the states
         realm.write(() => {
             realm.create('Todo' , {
                 _id: nanoid(),
                 title: title,
                 desc: desc,
                 isCompleted: false,
-                dateCreated: date.toString(), 
-                dateCompleted: date.toString(),
+                dateCreated: getDateToString(), 
+                dateCompleted: getDateToString(),
                 owner_id: uuid
             })
         })
-        setDesc('')
-        setTitle('')
+        resetInputState();
         navigation.navigate('Home');
     }
 
     const handleInputs = () => {
+        // Validates the input of the user
         const titles = todo.map(item => item.title);
-        if(titles.includes(title)) {
+        if(titles.includes(title)) { //if the user already used the title
             Alert.alert("Error","The task title was already taken", [
                 {
                     text: 'Okay',
@@ -59,13 +59,14 @@ export default function AddTodo() {
     }
 
     const handleDisable = () => {
+        // Enables the button if the requirements was meet
         if(title.length > 0 && desc.length > 0) {
             if(handleInputs() === 'passed') {
                 setIsDisabled(false)
             }
         }
     }
-
+    
     useEffect(() => {
         handleDisable();
         handleInputs();

@@ -16,14 +16,14 @@ export default function EditTod() {
     const [desc,setDesc] = useState('')
     const [title,setTitle] = useState('')
     const dispatch = useDispatch();
-    const itemFromRealm = useObject(Todo, activeStoreItem._id)
-    const navigation = useNavigation();
     const realm = useRealm();
+    const navigation = useNavigation();
+    const itemFromRealm = useObject(Todo, activeStoreItem._id)
 
     useEffect(() => {
+        //Sets the selected item to the edit input fields
         setTitle(activeStoreItem.title)
         setDesc(activeStoreItem.desc);
-        console.log(activeStoreItem,"item id onload")
 
         return () => {
             setDesc('');
@@ -33,7 +33,9 @@ export default function EditTod() {
     },[])
 
     const handleEdit = () => {
+        //Updates the data in the realm db
         realm.write(() => {
+            itemFromRealm._id = activeStoreItem._id
             itemFromRealm.title = title;
             itemFromRealm.desc = desc
         })
@@ -59,6 +61,7 @@ export default function EditTod() {
             inputStyle={styles.descInputArea}
             onChangeText={(text) => setDesc(text)}
             value={ desc?.length > 0 ? desc :  '' }
+            isMultiline={true}
         />
         <Btn label={"Save"} btnStyle={styles.btn} callback={handleEdit}/>    
     </Container>
@@ -77,12 +80,15 @@ const styles = StyleSheet.create({
     },
     descInputArea: {
         height: 300,
-        textAlign: 'left'
+        textAlign: 'left',
+        flexWrap:'wrap',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        textAlignVertical: 'top',
     },
     btn: {
         height: 50,
         bottom: -100,
         alignSelf: 'center'
     },
-    textArea: {}
 })

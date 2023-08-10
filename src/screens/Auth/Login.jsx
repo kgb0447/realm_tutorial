@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { View, StyleSheet, useColorScheme, Alert } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { setAuth, setIsLoggedIn } from '../../store/reducers/AuthReducerSlice'
+import { TodoRealmContext } from '../../realm/config/TodoConfig'
+import { User } from '../../realm/db/User'
 import InputField from '../../components/shared/InputField'
 import Btn from '../../components/shared/Btn'
 import AuthLink from '../../components/shared/AuthLink'
-import { TodoRealmContext } from '../../realm/config/TodoConfig'
-import { User } from '../../realm/db/User'
 
 export default function Login() {
   const { useQuery } = TodoRealmContext;
@@ -14,11 +14,14 @@ export default function Login() {
   const users = useQuery(User);
   const [username,setIsUsername] = useState('');
   const [password,setPassword] = useState('');
-  const [isDisabled,setIsDisabled] = useState(true);
+  const [isDisabled,setIsDisabled] = useState(!true);
   const theme = useColorScheme();
 
   const handleLogIn = () => {
-    const queuedUser = users.filter((item) => item.username === username)[0];
+    //get the username of the entered username
+    const queuedUser = users.filter((item) => item.username === username)[0]; 
+    
+    // Input validation
     if(queuedUser !== null) {
       if(queuedUser?.password === password) {
         dispatch(setIsLoggedIn(true))
@@ -34,8 +37,11 @@ export default function Login() {
   }
 
   useEffect(() => {
+    // Checks if the there is an existing input
     if(password.length > 0 && username.length > 0 ){
       setIsDisabled(false)
+    } else {
+      return
     }
     return () => {
       setIsDisabled(true)

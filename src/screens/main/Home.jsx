@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { setActiveStoreItem } from '../../store/reducers/TodoReducerSlice'
-import { Todo } from '../../realm/db/Todo'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { View, Text, StyleSheet,ScrollView, useWindowDimensions, Image, TouchableOpacity, Modal, Alert, Pressable, useColorScheme } from 'react-native'
 import { User } from '../../realm/db/User'
 import { setAuth } from '../../store/reducers/AuthReducerSlice'
+import { getDateToString } from '../../utils/helpers'
 import ArrowRight from '../../assets/img/icons/form/ArrowRight.png'
 import Close from '../../assets/img/icons/form/CloseSquare.png'
 import Btn from '../../components/shared/Btn'
@@ -16,21 +16,26 @@ import More from '../../assets/img/icons/form/MoreCircle.png'
 export default function Home() {
   const navigation = useNavigation();
   const {uuid} = useSelector(state => state.AuthReducerSlice)
-  const { useQuery, useRealm, useObject } = TodoRealmContext;
+  const { useRealm, useObject } = TodoRealmContext;
   const realm = useRealm();
   const [todoItems,setTodoItems] = useState([]);
-  const items = useQuery(Todo);
   const activeUser = useObject(User,uuid)
   const { width } = useWindowDimensions();
   const [isShowMore,setIsHowMore] = useState(false);
-  const [activeItemState,setActiveItemState] = useState({})
+  const [activeItemState,setActiveItemState] = useState({});
   const dispatch = useDispatch();
   const theme = useColorScheme();
+  
+  // A way to get data from realm without using useQuery hook
+  // Gets the data from the realm db
+  realm.addListener('change',() => setTodoItems(realm.objects('Todo').filter((val) => val.owner_id === uuid)))
   useEffect(() => {
-    setTodoItems(items)
+
+    setTodoItems(setTodoItems(realm.objects('Todo').filter((val) => val.owner_id === uuid)) || []);
   }, [navigation])
 
   useEffect(() => {
+    // Updates the user data in the store
     dispatch(setAuth({
       uuid: activeUser._uuid,
       username: activeUser.username,
@@ -38,53 +43,57 @@ export default function Home() {
       date_joined: activeUser.date_joined
     }))
   },[activeUser])
+
   const handleAddTask = () => {
     navigation.navigate('AddTodo')
 }
 
-  const handleClickMore = (item) => {
-    dispatch(setActiveStoreItem(item));
-    setIsHowMore(true);
-    setActiveItemState(item);
-  }
-  
-  const handleView = (item) => {
-    dispatch(setActiveStoreItem(item))
-      Promise.resolve().then(() => {
-      navigation.navigate('ViewTodo');
-    })
-  }
+const resetState = () => {
+  setIsHowMore(false);
+  setActiveItemState({});
+}
 
-  const handleDelete = () => {
-    realm.write(() => {
-      realm.delete(activeItemState)
+const handleClickMore = (item) => {
+  //Toggles the options dropdown
+  dispatch(setActiveStoreItem(item));
+  setIsHowMore(true);
+  setActiveItemState(item);
+}
+
+const handleView = (item) => {
+  // Views the selected todo
+  dispatch(setActiveStoreItem(item));
+  navigation.navigate('ViewTodo');
+}
+
+const handleDelete = () => {
+  realm.write(() => {
+    realm.delete(activeItemState);
+  });
+  resetState();
+}
+
+const handleUpdate = () => {
+  resetState();
+  navigation.navigate('EditTodo');
+}
+
+const handleComplete = () => {
+  // Removes the item from the Todo schema and pushes it to the Completed schema and resets state
+  realm.write(() => {
+    realm.create('Completed', {
+      _id: activeItemState._id,
+      title: activeItemState.title,
+      desc: activeItemState.desc,
+      isCompleted: true,
+      dateCreated: activeItemState.dateCreated,
+      dateCompleted: getDateToString(),
+      owner_id: uuid
     });
-    setIsHowMore(false);
-    setActiveItemState({});
-  }
-
-  const handleUpdate = () => {
-    setIsHowMore(false)
-    setActiveItemState({});
-    navigation.navigate('EditTodo')
-  }
-
-  const handleComplete = () => {
-    const date = new Date().getTime();
-    realm.write(() => {
-      realm.create('Completed', {
-        _id: activeItemState._id,
-        title: activeItemState.title,
-        desc: activeItemState.desc,
-        isCompleted: true,
-        dateCreated: activeItemState.dateCreated, 
-        dateCompleted: JSON.stringify(date),
-        owner_id: uuid
-      });
-        realm.delete(activeItemState);
-    })
-    setIsHowMore(false)
-  }
+    realm.delete(activeItemState);
+  });
+  resetState();
+}
 
   return (
     <Container style={styles.container}>
@@ -92,7 +101,7 @@ export default function Home() {
         {
           todoItems.map((item) => (
             <Pressable style={styles.todoItems} key={item._id} onPress={() => handleView(item)}>
-              <Text numberOfLines={1} style={[styles.todoTitle,{color: theme === 'dark' ? '#fff' : '#000'}]}>{item.title}</Text>
+              <Text numberOfLines={1} style={[styles.todoTitle,{color: theme === 'dark' ? '#fff' : '#000'}]}>{item?.title}</Text>
               <TouchableOpacity 
                 style={styles.moreIcon}
                 onPress={() => handleClickMore(item)}

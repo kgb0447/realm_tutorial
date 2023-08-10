@@ -16,6 +16,7 @@ export default function Profile() {
   const theme = useColorScheme()
 
   const handlePress = (val) => {
+    // Sets the logged in state to false
     if(val.id === 4) {
       dispatch(setIsLoggedIn(false))
     } else {

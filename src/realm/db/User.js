@@ -5,7 +5,7 @@ export class Preferences extends Realm.Object {
         name: 'Preferences',
         properties: {
             dark_mode: 'bool',
-            font_scale: 'int',
+            font_scale: 'string',
             owner_id: 'string'
         }
     }
@@ -18,7 +18,7 @@ export class User extends Realm.Object {
             password: 'string',
             username: 'string',
             name: 'string?',
-            date_joined: 'date',
+            date_joined: 'int',
             pending_tasks: 'Todo?',
             completed_tasks: 'Completed?',
             preferences: 'Preferences?'

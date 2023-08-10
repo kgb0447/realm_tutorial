@@ -1,13 +1,15 @@
 import { View, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
+import { useSelector } from 'react-redux';
 import Container from '../../components/layout/Container';
 import Items from '../../components/shared/Items';
 
 export default function CompletedTask() {
   const { useQuery } = TodoRealmContext;
   const { width } = useWindowDimensions();
-  const items = useQuery('Completed');
-  
+  const { uuid } = useSelector(state => state.AuthReducerSlice)
+  const items = useQuery('Completed').filter((item) => item.owner_id === uuid);
+
   return (
     <Container>
       <ScrollView style={styles.container} bounces={true}>

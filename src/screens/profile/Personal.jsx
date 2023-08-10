@@ -9,10 +9,11 @@ import Edit from '../../assets/img/icons/Edit.png'
 import InputField from '../../components/shared/InputField';
 import Btn from '../../components/shared/Btn';
 import Profile from '../../assets/img/icons/Profile.png'
+import { getParsedDate } from '../../utils/helpers';
 
 export default function Personal() {
-  const dispatch = useDispatch();
   const { useRealm, useObject} = TodoRealmContext;
+  const dispatch = useDispatch();
   const realm = useRealm();
   const user = useSelector(state => state.AuthReducerSlice);
   const item = useObject(User,user.uuid)
@@ -21,6 +22,7 @@ export default function Personal() {
   const [inputValue,setInputValue] = useState(null);
 
   const setItem = (prop,val) => {
+    // Updates an item depending on the property and resets the state after the update
     try {
       realm.write(() => {
         item[prop] = val
@@ -66,7 +68,7 @@ export default function Personal() {
         }} 
       />
       <ProfileItems 
-        item={user.date_joined.toString() || ''}
+        item={getParsedDate(user.date_joined)}
         label={"Date Joined"}  
         style={{
           flexDirection: 'column',

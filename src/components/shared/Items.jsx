@@ -1,12 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
+import { getParsedDate } from '../../utils/helpers';
 
 export default function Items({item,isCompleted = false,wrapperStyle,labelStyle}) {
-    const getDate = (item) => {
-        let date;
-        date = new Date(JSON.parse(item));
-        return date.toString()
-      }
+
   return (
     <View style={[styles.wrapper,wrapperStyle]}>
         <View style={styles.items}>
@@ -19,13 +16,13 @@ export default function Items({item,isCompleted = false,wrapperStyle,labelStyle}
         </View>
         <View style={styles.dateItem}>
             <Text style={[styles.labels,labelStyle]}>Date Created:</Text>
-            <Text style={styles.dates}>{getDate(item?.dateCreated)}</Text>
+            <Text style={styles.dates}>{getParsedDate(item?.dateCreated)}</Text>
         </View>
         {
             isCompleted ? (
             <View style={styles.dateItem}>
                 <Text style={[styles.labels]}>Date Completed:</Text>
-                <Text style={styles.dates}>{getDate(item.dateCompleted)}</Text>
+                <Text style={styles.dates}>{getParsedDate(item.dateCompleted)}</Text>
             </View>)
             : null
         }

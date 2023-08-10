@@ -5,6 +5,7 @@ import { User } from '../../realm/db/User'
 import { nanoid } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import { setAuth, setIsLoggedIn } from '../../store/reducers/AuthReducerSlice'
+import { getDateToString } from '../../utils/helpers'
 import InputField from '../../components/shared/InputField'
 import Container from '../../components/layout/Container'
 import Btn from '../../components/shared/Btn'
@@ -18,28 +19,28 @@ export default function Register() {
   const [username,setUserName] = useState('')
   const [password,setPassword] = useState('')
   const [confirmPassword,setConfirmPassword] = useState('')
-  const [validationMessage,setValidationMessage] = useState(null);
+  const [validationMessage,setValidationMessage] = useState('');
   const [isDisabled,setIsDisabled] = useState(true);
 
   const validateInput = () => {
     const userNames = users.map((item) => item.username);
-    if(confirmPassword !== password) {
+    if(confirmPassword !== password) { //if password and confirm password passed the requirement
       setValidationMessage('Your password does not match')
-    } else if(userNames.includes(username)) {
+    } else if(userNames.includes(username)) { //if the username already exists
       setValidationMessage('Username already exists!')
     } else {
-      setValidationMessage(null)
+      setValidationMessage('')
     }
   }
 
   const validateStates = () => {
-    if(username.length > 3 && password.length > 3) {
-      if(validationMessage === null) {
+    if(username.length > 3 && password.length > 3) { //Checks if there's an input
+      if(validationMessage.length < 2) {
         setIsDisabled(false)
       }
     }
     return ()=> {
-      setValidationMessage(null)
+      setValidationMessage('')
     }
   }
 
@@ -49,23 +50,25 @@ export default function Register() {
   },[username,password,confirmPassword]);
 
   const submit = () => {
+    // Adds a new user to the database and resets the states
     const id = nanoid()
     realm.write(() => {
       realm.create('User',{
         _uuid: id,
         username: username,
         password: password,
-        date_joined: new Date()
+        date_joined: Date.now()
       })
       setPassword('');
       setUserName('');
       setValidationMessage(null);
     });
     
+    //Set an active user in the store
     dispatch(setAuth({
       uuid: id,
       username: username,
-      date_joined: Date.now(),
+      date_joined: getDateToString(),
     }))
     dispatch(setIsLoggedIn(true))
   }
