@@ -17,16 +17,19 @@ export default function Login() {
   const [isDisabled,setIsDisabled] = useState(true);
   const theme = useColorScheme();
 
-
   const handleLogIn = () => {
     const queuedUser = users.filter((item) => item.username === username)[0];
-    if(queuedUser.password === password) {
-      dispatch(setIsLoggedIn(true))
-      dispatch(setAuth({
-        uuid: queuedUser._uuid       
-      }))
+    if(queuedUser !== null) {
+      if(queuedUser?.password === password) {
+        dispatch(setIsLoggedIn(true))
+        dispatch(setAuth({
+          uuid: queuedUser._uuid       
+        }))
+      } else {
+        Alert.alert("Oops","You have provided a wrong password or username!")
+      }
     } else {
-      Alert.alert("Oops","You have provided a wrong password or username!")
+      Alert.alert("Sign In Failed", "The username or password does not match or does not exist")
     }
   }
 
@@ -37,7 +40,8 @@ export default function Login() {
     return () => {
       setIsDisabled(true)
     }
-  } ,[password, username])
+  } ,[password, username]);
+  
   return (
     <View style={[styles.container,{backgroundColor: theme === 'dark' ? '#000' : '#fff'}]}>
       <InputField 

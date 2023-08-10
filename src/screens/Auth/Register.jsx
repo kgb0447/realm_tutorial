@@ -1,26 +1,25 @@
-import { View, Text, StyleSheet, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import InputField from '../../components/shared/InputField'
-import Container from '../../components/layout/Container'
-import Btn from '../../components/shared/Btn'
-import AuthLink from '../../components/shared/AuthLink'
+import { useEffect, useState } from 'react'
+import { Text, StyleSheet } from 'react-native'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import { User } from '../../realm/db/User'
 import { nanoid } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import { setAuth, setIsLoggedIn } from '../../store/reducers/AuthReducerSlice'
+import InputField from '../../components/shared/InputField'
+import Container from '../../components/layout/Container'
+import Btn from '../../components/shared/Btn'
+import AuthLink from '../../components/shared/AuthLink'
 
 export default function Register() {
   const { useRealm, useQuery } = TodoRealmContext;
+  const dispatch = useDispatch()
   const realm = useRealm();
   const users = useQuery(User);
-  const dispatch = useDispatch()
   const [username,setUserName] = useState('')
   const [password,setPassword] = useState('')
   const [confirmPassword,setConfirmPassword] = useState('')
   const [validationMessage,setValidationMessage] = useState(null);
   const [isDisabled,setIsDisabled] = useState(true);
-  
 
   const validateInput = () => {
     const userNames = users.map((item) => item.username);
@@ -43,10 +42,10 @@ export default function Register() {
       setValidationMessage(null)
     }
   }
+
   useEffect(() => {
     validateInput();
-    validateStates()
-    
+    validateStates();
   },[username,password,confirmPassword]);
 
   const submit = () => {
@@ -58,21 +57,19 @@ export default function Register() {
         password: password,
         date_joined: new Date()
       })
-    })
-
-    setPassword('');
-    setUserName('');
-    setValidationMessage(null);
+      setPassword('');
+      setUserName('');
+      setValidationMessage(null);
+    });
+    
     dispatch(setAuth({
       uuid: id,
       username: username,
       date_joined: Date.now(),
     }))
     dispatch(setIsLoggedIn(true))
-    
-
-
   }
+
   return (
     <Container style={styles.container}>
       <Text>Register</Text>

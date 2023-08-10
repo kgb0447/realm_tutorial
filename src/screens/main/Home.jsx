@@ -1,17 +1,17 @@
+import { useEffect, useState } from 'react'
 import { setActiveStoreItem } from '../../store/reducers/TodoReducerSlice'
 import { Todo } from '../../realm/db/Todo'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
-import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { View, Text, StyleSheet,ScrollView, useWindowDimensions, Image, TouchableOpacity, Modal, Alert, Pressable, useColorScheme } from 'react-native'
+import { User } from '../../realm/db/User'
+import { setAuth } from '../../store/reducers/AuthReducerSlice'
 import ArrowRight from '../../assets/img/icons/form/ArrowRight.png'
 import Close from '../../assets/img/icons/form/CloseSquare.png'
 import Btn from '../../components/shared/Btn'
 import Container from '../../components/layout/Container'
 import More from '../../assets/img/icons/form/MoreCircle.png'
-import { User } from '../../realm/db/User'
-import { setAuth } from '../../store/reducers/AuthReducerSlice'
 
 export default function Home() {
   const navigation = useNavigation();
@@ -78,11 +78,11 @@ export default function Home() {
         desc: activeItemState.desc,
         isCompleted: true,
         dateCreated: activeItemState.dateCreated, 
-        dateCompleted: JSON.stringify(date)
+        dateCompleted: JSON.stringify(date),
+        owner_id: uuid
       });
         realm.delete(activeItemState);
     })
-    navigation.navigate('CompletedTask')
     setIsHowMore(false)
   }
 

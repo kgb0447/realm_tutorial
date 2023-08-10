@@ -1,5 +1,4 @@
-import { View, Text, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
-import React from 'react'
+import { View, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import Container from '../../components/layout/Container';
 import Items from '../../components/shared/Items';
@@ -8,11 +7,6 @@ export default function CompletedTask() {
   const { useQuery } = TodoRealmContext;
   const { width } = useWindowDimensions();
   const items = useQuery('Completed');
-  const getDate = (item) => {
-    let date;
-    date = new Date(JSON.parse(item));
-    return date.toString()
-  }
   
   return (
     <Container>

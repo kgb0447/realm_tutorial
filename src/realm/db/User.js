@@ -5,7 +5,8 @@ export class Preferences extends Realm.Object {
         name: 'Preferences',
         properties: {
             dark_mode: 'bool',
-            font_scale: 'int'
+            font_scale: 'int',
+            owner_id: 'string'
         }
     }
 }

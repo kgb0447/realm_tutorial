@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import Container from '../../components/layout/Container'
-import InputField from '../../components/shared/InputField'
-import Btn from '../../components/shared/Btn'
+import { useEffect, useState } from 'react'
 import { StyleSheet, useWindowDimensions, Alert } from 'react-native'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import { nanoid } from '@reduxjs/toolkit'
 import { useNavigation } from '@react-navigation/native'
 import { Todo } from '../../realm/db/Todo'
 import { useSelector } from 'react-redux'
+import Container from '../../components/layout/Container'
+import InputField from '../../components/shared/InputField'
+import Btn from '../../components/shared/Btn'
 
 export default function AddTodo() {
     const { useRealm,useQuery } = TodoRealmContext;
@@ -21,11 +21,11 @@ export default function AddTodo() {
     const date = Date.now();
     const navigation = useNavigation();
 
-
     const resetInputState = () => {
         setDesc('');
         setTitle('');
     }
+
     const handleAdd = () => {
         realm.write(() => {
             realm.create('Todo' , {
@@ -56,7 +56,6 @@ export default function AddTodo() {
         } else {
             return 'passed'
         }
-
     }
 
     const handleDisable = () => {
@@ -66,6 +65,7 @@ export default function AddTodo() {
             }
         }
     }
+
     useEffect(() => {
         handleDisable();
         handleInputs();
@@ -124,5 +124,4 @@ const styles = StyleSheet.create({
         bottom: -100,
         alignSelf: 'center'
     },
-    textArea: {}
 })

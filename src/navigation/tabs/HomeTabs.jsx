@@ -15,7 +15,14 @@ export default function HomeTabs() {
       {
         id: 1,
         name: 'CompletedTask',
-        component: CompletedTask
+        component: CompletedTask,
+        options: {
+          title: 'Completed Tasks',
+          headerStyle: {
+            
+          },
+          headerTitleAlign: 'center'
+        }
       },
       {
         id: 3,
@@ -26,6 +33,10 @@ export default function HomeTabs() {
   return (
     <Tab.Navigator
     initialRouteName='Home'
+    screenOptions={{
+      headerTitleAlign: 'center',
+      // headerShown: false
+    }}
     >
         {
           routes.sort((a ,b) => a.id - b.id).map((item,index) => (
@@ -33,8 +44,7 @@ export default function HomeTabs() {
               key={item.name + index}
               name={item.name}
               component={item.component}  
-              options={item?.options}
-              
+              options={[item?.options,{title: item.name}]}
             />
           ))
         }

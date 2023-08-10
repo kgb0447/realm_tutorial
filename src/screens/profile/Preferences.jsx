@@ -40,9 +40,10 @@ export default function Preferences() {
       })
     } else {
         realm.write(() => {
-          realm.create('User', {
-            _uuid: 'admin1',
-            theme: theme
+          realm.create('Preferences', {
+            owner_id: uuid,
+            dark_mode: isDarkMode,
+            font_scale: 'normal'
           })
         })
     }

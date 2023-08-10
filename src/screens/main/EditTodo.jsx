@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-
 import { setActiveStoreItem } from '../../store/reducers/TodoReducerSlice'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { Todo } from '../../realm/db/Todo'
-
 import Btn from '../../components/shared/Btn'
 import Container from '../../components/layout/Container'
 import InputField from '../../components/shared/InputField'
@@ -15,10 +13,8 @@ export default function EditTod() {
     const { activeStoreItem } = useSelector(state=> state.TodoReducerSlice);
     const { useRealm, useObject } = TodoRealmContext;
     const { width } = useWindowDimensions();
-    
     const [desc,setDesc] = useState('')
     const [title,setTitle] = useState('')
-    
     const dispatch = useDispatch();
     const itemFromRealm = useObject(Todo, activeStoreItem._id)
     const navigation = useNavigation();

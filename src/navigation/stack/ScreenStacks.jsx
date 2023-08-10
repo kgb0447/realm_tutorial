@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import AddTodo from '../../screens/main/AddTodo';
@@ -9,8 +9,11 @@ import Preferences from '../../screens/profile/Preferences';
 import About from '../../screens/profile/About';
 import Personal from '../../screens/profile/Personal';
 import HomeTabs from '../tabs/HomeTabs';
+import { useNavigation } from '@react-navigation/native';
+import { options } from 'yargs';
 
 export default function ScreenStacks() {
+    const navigation = useNavigation();
     const Stack = createStackNavigator();
         const route = [
             {
@@ -44,7 +47,10 @@ export default function ScreenStacks() {
             },
             {
                 name: 'Tabs',
-                component: HomeTabs
+                component: HomeTabs,
+                options: {
+                    headerShown: false
+                }
             }
             
         ]
@@ -68,10 +74,7 @@ export default function ScreenStacks() {
                         //         display: 'none'
                         //     }
                         // }}
-                        options={{
-                            title: item.name,
-                            headerShown: item.showHeader || false
-                        }}
+                        options={item.options}
                     />
                 ))
             }

@@ -1,13 +1,15 @@
-import { View, Text, Button, Modal, Alert, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, Button, Modal, Alert, StyleSheet, Image } from 'react-native'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { TodoRealmContext } from '../../realm/config/TodoConfig';
+import { User } from '../../realm/db/User';
+import { setAuth } from '../../store/reducers/AuthReducerSlice';
 import ProfileItems from '../../components/shared/ProfileItems';
 import Edit from '../../assets/img/icons/Edit.png'
 import InputField from '../../components/shared/InputField';
-import { TodoRealmContext } from '../../realm/config/TodoConfig';
-import { User } from '../../realm/db/User';
 import Btn from '../../components/shared/Btn';
-import { setAuth } from '../../store/reducers/AuthReducerSlice';
+import Profile from '../../assets/img/icons/Profile.png'
+
 export default function Personal() {
   const dispatch = useDispatch();
   const { useRealm, useObject} = TodoRealmContext;
@@ -42,6 +44,9 @@ export default function Personal() {
   },[isShow])
   return (
     <View>
+      <View style={styles.avatarWrapper}>
+        <Image source={Profile} style={styles.avatar}/>
+      </View>
       <ProfileItems 
         item={user.username} 
         icon={Edit} 
@@ -109,5 +114,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     alignSelf: 'center'
+  },
+  avatarWrapper: {
+    alignSelf: 'center',
+    borderRadius: 50,
+    width: 100,
+    height: 100,
+    backgroundColor: 'gray',
+    marginVertical: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  avatar: {
+    width: 90,
+    height: 90,
   }
 })
