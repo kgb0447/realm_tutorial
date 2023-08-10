@@ -4,22 +4,22 @@ import Show from '../../assets/img/icons/form/Show.png'
 import Hide from '../../assets/img/icons/form/Hide.png'
 import { removeInputSpace } from '../../utils/inputHeper'
 
-
 export default function InputField({
         inputMode = 'text',
         isPassword = false,
+        isUserName = false,
         onChangeText = () => {},
         label = '',
         inputContainerStyle,
         inputStyle,
         placeholder ='',
         value,
-        onBlur
+        onBlur = () => {},
+        isMultiline = false
     }) {
     const [isShowPassword,setIsShowPassword] = useState(false)
     const [userInput,setUserInput] = useState('');
-    const [isFocused,setIsFocused] = useState({})
-
+    const [isFocused,setIsFocused] = useState({}) //used for onFocus behavior
 
     const onchange = (input) => {
         setUserInput(input)
@@ -27,6 +27,7 @@ export default function InputField({
     }
 
     const onFocus = () => {
+        //sets the onFocus effect
         setIsFocused({
             shadowColor: 'gray',
             shadowOffset: {width: 0, height: 0},
@@ -35,18 +36,22 @@ export default function InputField({
             
         })
     }
-    useEffect(() => {
-        if(!isPassword) {
-            setIsShowPassword(true)
-        }
-    }, [])
+
+    const handleBlur = () => {
+        setIsFocused({})
+        onBlur()
+    }
 
     useEffect(() => {
-        if(isPassword) {
+        if(isPassword || isUserName) {
             const noSpaceInput = removeInputSpace(userInput);
             setUserInput(noSpaceInput);
         }
+        return () => {
+            setUserInput('')
+        }
     }, [userInput])
+
   return (
     <View style={[styles.container,inputContainerStyle]}>
         <Text style = {[styles.label]}>{label}</Text>
@@ -56,12 +61,12 @@ export default function InputField({
                 <TextInput 
                     placeholder={placeholder} 
                     onChangeText={onchange} 
-                    value={value !== undefined ? value : userInput}
+                    value={value ? value : userInput}
                     inputMode={inputMode}
                     secureTextEntry={!isShowPassword}
                     style={[styles.textInput,inputStyle,isFocused]}
                     onFocus={onFocus}
-                    onBlur={() => setIsFocused({})}
+                    onBlur={handleBlur}
                     
                 />
                 {
@@ -82,12 +87,13 @@ export default function InputField({
                 placeholder={placeholder} 
                 onChangeText={onchange} 
                 placeHolderTextColor={'#fff'}
-                value={value !== undefined ? value : userInput}
+                autoCapitalize={isUserName ? 'none' : 'sentences'}
                 inputMode={inputMode}
                 style={[styles.textInput,inputStyle,isFocused]}
                 onFocus={onFocus}
-                onBlur={() => setIsFocused({})}
-
+                onBlur={handleBlur}
+                value={value ? value : userInput}
+                multiline={isMultiline}
             />
            ) 
         }
@@ -98,7 +104,7 @@ export default function InputField({
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
-        width: '100%'
+        width: '100%',
     },
     label: {
         fontSize: 18,
@@ -113,7 +119,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 8,
         marginBottom: 20,
-        textDecorationLine: 'none'
+        textDecorationLine: 'none',
+        flexWrap: 'wrap',
     },
     eyeIcon: {
         position: 'absolute',

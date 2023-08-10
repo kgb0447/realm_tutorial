@@ -2,7 +2,6 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../../screens/main/Home';
 import CompletedTask from '../../screens/main/CompletedTask';
-import { useNavigation } from '@react-navigation/native';
 import Profile from '../../screens/profile/Profile';
 
 export default function HomeTabs() {
@@ -26,6 +25,7 @@ export default function HomeTabs() {
     ]
   return (
     <Tab.Navigator
+    initialRouteName='Home'
     >
         {
           routes.sort((a ,b) => a.id - b.id).map((item,index) => (

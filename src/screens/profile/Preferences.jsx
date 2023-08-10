@@ -5,13 +5,15 @@ import { TodoRealmContext } from '../../realm/config/TodoConfig';
 import { User } from '../../realm/db/User'
 import Container from '../../components/layout/Container';
 import { colors } from '../../theme/darkmode';
+import { useSelector } from 'react-redux';
 
 export default function Preferences() {
   const { useRealm, useObject } = TodoRealmContext;
   const [isDarkMode,setIsDarkMode] = useState(false);
+  const {uuid} = useSelector(state=> state.AuthReducerSlice)
   const theme = useColorScheme();
   const realm = useRealm();
-  const themeFromStorage = useObject(User, 'admin1')
+  const themeFromStorage = useObject(User, uuid)
 
   const setColorScheme = () => {
     if(isDarkMode) {
@@ -54,7 +56,6 @@ export default function Preferences() {
     </Container>
   )
 }
-
 
 const styles = StyleSheet.create({
 

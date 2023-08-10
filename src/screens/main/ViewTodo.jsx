@@ -18,7 +18,7 @@ export default function ViewTodo() {
       </View>
       <View style={styles.dateWrapper}>
         <Text style={styles.labelText}>Date Created:</Text>
-        <Text style={styles.date}>{createDate.toString()}</Text>
+        <Text style={styles.date}>{createDate.toString() || ''}</Text>
       </View>
     </Container>
   )

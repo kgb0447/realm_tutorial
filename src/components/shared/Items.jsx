@@ -19,7 +19,7 @@ export default function Items({item,isCompleted = false,wrapperStyle,labelStyle}
         </View>
         <View style={styles.dateItem}>
             <Text style={[styles.labels,labelStyle]}>Date Created:</Text>
-            <Text style={styles.dates}>{getDate(item.dateCreated)}</Text>
+            <Text style={styles.dates}>{getDate(item?.dateCreated)}</Text>
         </View>
         {
             isCompleted ? (

@@ -42,7 +42,7 @@ export default function EditTod() {
             itemFromRealm.desc = desc
         })
         Promise.resolve().then(() => {
-            navigation.navigate('HomeScreen');
+            navigation.navigate('Home');
         })
     }
 

@@ -1,10 +1,11 @@
 const { createSlice } = require("@reduxjs/toolkit")
 
 const initialState = {
-    isLoggedIn: false,
+    isLoggedIn: false, 
+    uuid: '',
     username: '',
-    password: '',
-    name: ''
+    name: '',
+    date_joined: ''
 }
 
 const AuthReducerSlice = createSlice({
@@ -12,8 +13,10 @@ const AuthReducerSlice = createSlice({
     initialState,
     reducers: {
         setAuth: (state,actions) => {
+            state.uuid = actions.payload?.uuid
             state.username = actions.payload?.username;
             state.name = actions.payload?.name
+            state.date_joined = actions.payload?.date_joined
         },
         setIsLoggedIn: (state,actions) => {
             state.isLoggedIn = actions.payload

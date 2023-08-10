@@ -8,7 +8,8 @@ export class Todo extends Realm.Object{
             desc: 'string',
             isCompleted: { type: 'bool', default: false},
             dateCreated: 'string',
-            dateCompleted: 'string'
+            dateCompleted: 'string',
+            owner_id: 'string'
         },
         primaryKey: '_id'
     }
@@ -24,7 +25,8 @@ export class Completed extends Realm.Object {
             title: 'string',
             desc: 'string',
             dateCreated: 'string',
-            dateCompleted: 'string'
+            dateCompleted: 'string',
+            owner_id: 'string'
         },
         primaryKey: '_id'
     }

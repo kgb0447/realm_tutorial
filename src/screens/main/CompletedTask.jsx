@@ -13,7 +13,7 @@ export default function CompletedTask() {
     date = new Date(JSON.parse(item));
     return date.toString()
   }
-  console.log(getDate('1691052022150').toString(),"test")
+  
   return (
     <Container>
       <ScrollView style={styles.container} bounces={true}>

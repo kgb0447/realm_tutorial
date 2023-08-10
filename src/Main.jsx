@@ -4,12 +4,10 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import RootStack from './navigation/RootStack'
 import { TodoRealmContext } from './realm/config/TodoConfig'
 import { User } from './realm/db/User'
-import { PERMISSIONS } from 'react-native-permissions'
 
 export default function Main() {
   const { useObject } = TodoRealmContext;
   const theme = useObject(User,'admin1')
-  // console.log(PERMISSIONS,"pers")
 
   
   useEffect(() => {

@@ -1,24 +1,32 @@
-import { View, Text, StyleSheet, useColorScheme } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
+import { useEffect, useState } from 'react'
+import { View, StyleSheet, useColorScheme, Alert } from 'react-native'
+import { useDispatch } from 'react-redux'
+import { setAuth, setIsLoggedIn } from '../../store/reducers/AuthReducerSlice'
 import InputField from '../../components/shared/InputField'
 import Btn from '../../components/shared/Btn'
-import { useNavigation } from '@react-navigation/native'
-import { useDispatch } from 'react-redux'
-import { setIsLoggedIn } from '../../store/reducers/AuthReducerSlice'
-import Container from '../../components/layout/Container'
+import AuthLink from '../../components/shared/AuthLink'
+import { TodoRealmContext } from '../../realm/config/TodoConfig'
+import { User } from '../../realm/db/User'
 
 export default function Login() {
+  const { useQuery } = TodoRealmContext;
   const dispatch = useDispatch();
+  const users = useQuery(User);
   const [username,setIsUsername] = useState('');
   const [password,setPassword] = useState('');
-  const [isDisabled,setIsDisabled] = useState(true)
+  const [isDisabled,setIsDisabled] = useState(true);
   const theme = useColorScheme();
+
+
   const handleLogIn = () => {
-    if(username === 'admin1' && password === 'qwer') {
+    const queuedUser = users.filter((item) => item.username === username)[0];
+    if(queuedUser.password === password) {
       dispatch(setIsLoggedIn(true))
+      dispatch(setAuth({
+        uuid: queuedUser._uuid       
+      }))
     } else {
-      return null
+      Alert.alert("Oops","You have provided a wrong password or username!")
     }
   }
 
@@ -30,25 +38,32 @@ export default function Login() {
       setIsDisabled(true)
     }
   } ,[password, username])
-  
   return (
     <View style={[styles.container,{backgroundColor: theme === 'dark' ? '#000' : '#fff'}]}>
       <InputField 
         placeholder='Enter your username' 
         label='Username'
         onChangeText={(text) => setIsUsername(text)}
+        value={username}
+        isUserName={true}
       />
       <InputField 
         placeholder='Enter your password' 
         label='Password' 
         isPassword={true}
         onChangeText={(text)=> setPassword(text)}
+        value={password}
       />
       <Btn 
-        label={'Log in'}  
+        label={'Log in' }  
         btnStyle={styles.btn}
         callback={handleLogIn}  
         isDisabled={isDisabled}
+      />
+      <AuthLink
+        label={`Don't have an account yet?`}
+        linkText='Sign Up'
+        link='Register'
       />
     </View>
   )
@@ -56,8 +71,9 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    flex: 1
+    paddingHorizontal: 20,
+    paddingVertical: 80,
+    flex: 1,
   },
   btn: {
     backgroundColor: '#000',

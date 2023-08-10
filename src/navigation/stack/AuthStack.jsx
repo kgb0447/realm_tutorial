@@ -9,11 +9,30 @@ export default function AuthStack() {
     const routes = [
         {
             name: 'LogIn',
-            component: Login
+            component: Login,
+            options: {
+                title: 'Sign In',
+                headerStyle: {
+                },
+                headerTitleAlign: 'center',
+                headerTitleStyle: {
+                    fontSize: 24
+                }
+            }
         },
         {
             name: 'Register',
-            component: Register
+            component: Register,
+            options: {
+                headerLeft: () => null,
+                title: 'Sign Up',
+                headerStyle: {
+                },
+                headerTitleAlign: 'center',
+                headerTitleStyle: {
+                    fontSize: 24
+                }
+            }
         }
     ]
   return (
@@ -24,6 +43,7 @@ export default function AuthStack() {
                     key={item.name + index} 
                     name={item.name} 
                     component={item.component}
+                    options={item?.options}
                 />
             ))
         }

@@ -2,7 +2,7 @@ import { setActiveStoreItem } from '../../store/reducers/TodoReducerSlice'
 import { Todo } from '../../realm/db/Todo'
 import { TodoRealmContext } from '../../realm/config/TodoConfig'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import { View, Text, StyleSheet,ScrollView, useWindowDimensions, Image, TouchableOpacity, Modal, Alert, Pressable, useColorScheme } from 'react-native'
 import ArrowRight from '../../assets/img/icons/form/ArrowRight.png'
@@ -10,23 +10,34 @@ import Close from '../../assets/img/icons/form/CloseSquare.png'
 import Btn from '../../components/shared/Btn'
 import Container from '../../components/layout/Container'
 import More from '../../assets/img/icons/form/MoreCircle.png'
+import { User } from '../../realm/db/User'
+import { setAuth } from '../../store/reducers/AuthReducerSlice'
 
 export default function Home() {
   const navigation = useNavigation();
-  const { useQuery, useRealm } = TodoRealmContext;
+  const {uuid} = useSelector(state => state.AuthReducerSlice)
+  const { useQuery, useRealm, useObject } = TodoRealmContext;
   const realm = useRealm();
   const [todoItems,setTodoItems] = useState([]);
   const items = useQuery(Todo);
+  const activeUser = useObject(User,uuid)
   const { width } = useWindowDimensions();
   const [isShowMore,setIsHowMore] = useState(false);
   const [activeItemState,setActiveItemState] = useState({})
   const dispatch = useDispatch();
-  const theme = useColorScheme()
-  
+  const theme = useColorScheme();
   useEffect(() => {
     setTodoItems(items)
   }, [navigation])
 
+  useEffect(() => {
+    dispatch(setAuth({
+      uuid: activeUser._uuid,
+      username: activeUser.username,
+      name: activeUser.name,
+      date_joined: activeUser.date_joined
+    }))
+  },[activeUser])
   const handleAddTask = () => {
     navigation.navigate('AddTodo')
 }
